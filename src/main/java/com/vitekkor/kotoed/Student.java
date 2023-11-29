@@ -24,7 +24,7 @@ public class Student extends Thread {
         try {
             kotoed.getHomeWorkResult(id, newHomeWork.name());
         } catch (InterruptedException e) {
-            throw new RuntimeException(e);
+            Thread.currentThread().interrupt();
         }
     }
 

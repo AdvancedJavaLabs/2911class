@@ -11,19 +11,18 @@ public class Kotoed {
 
     private final ConcurrentHashMap<Integer, HomeWorkResult> results = new ConcurrentHashMap<>();
 
-    public void checkHomeWork(int id) throws InterruptedException {
+    public void checkHomeWork(Worker worker) throws InterruptedException {
         while (true) {
-            System.out.println("Worker #" + id + " waits for new homework");
-            var homeWork = queue.poll();
-            if (homeWork == null) {
-                continue;
-            }
+            System.out.println("Worker #" + worker.getWorkerId() + " waits for new homework");
+            var homeWork = queue.take();
 
-            System.out.println("Worker #" + id + " start checking homework: " + homeWork.name() + "due to " + homeWork.deadline());
+            System.out.println("Worker #" + worker.getWorkerId() + " start checking homework: " + homeWork.name() + "due to " + homeWork.deadline());
+            worker.setWorking(true);
             Thread.sleep(2000);
-            System.out.println("Worker #" + id + " finish checking homework: " + homeWork.name());
+            System.out.println("Worker #" + worker.getWorkerId() + " finish checking homework: " + homeWork.name());
             var mark = ThreadLocalRandom.current().nextInt(0, 11);
             results.put(homeWork.name(), new HomeWorkResult(mark, homeWork));
+            worker.setWorking(false);
         }
     }
 
